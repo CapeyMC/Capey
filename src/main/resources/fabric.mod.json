@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "capey",
+  "version": "${version}",
+  "name": "Capey",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "unlicense",
+  "icon": "assets/capey/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "hu.jgj52.capey.client.CapeyClient"
+    ],
+    "main": [
+      "hu.jgj52.capey.Capey"
+    ]
+  },
+  "mixins": [
+    "${mixins_file}"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "<=${minecraft_version} >=${minecraft_lower_version}",
+    "owo": "*"
+  }
+}
