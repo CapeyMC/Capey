@@ -4,6 +4,7 @@
   "package": "hu.jgj52.capey.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
+    "PlayerInfoMixin"
   ],
   "client": [
   ],
