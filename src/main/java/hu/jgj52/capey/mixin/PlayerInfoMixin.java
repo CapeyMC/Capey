@@ -6,10 +6,12 @@ import hu.jgj52.capey.types.Player;
 import net.minecraft.client.multiplayer.PlayerInfo;
 //? >= 1.21.10 {
 import net.minecraft.core.ClientAsset;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.PlayerSkin;
 //? } else {
 /*import net.minecraft.client.resources.PlayerSkin;
 *///? }
+import org.jspecify.annotations.NonNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,11 +30,12 @@ public class PlayerInfoMixin {
 
         Cape cape = player.getCape();
 
-        if (cape.getIdentifier() != null) {
+        if (cape != null && cape.getIdentifier() != null) {
+
             PlayerSkin skin = new PlayerSkin(
             //? >= 1.21.10 {
                     original.body(),
-                    new ClientAsset.ResourceTexture(cape.getIdentifier()), new ClientAsset.ResourceTexture(cape.getIdentifier()),
+                    new TextureImpl(cape.getIdentifier()), new TextureImpl(cape.getIdentifier()),
                     original.model(),
                     original.secure()
             //? } else {
@@ -46,6 +49,20 @@ public class PlayerInfoMixin {
             cir.setReturnValue(skin);
         }
     }
+
+    //? >= 1.21.10 {
+    record TextureImpl(Identifier identifier) implements ClientAsset.Texture {
+        @Override
+        public @NonNull Identifier texturePath() {
+            return identifier;
+        }
+
+        @Override
+        public @NonNull Identifier id() {
+            return identifier;
+        }
+    }
+    //? }
 
     @Unique
     private UUID getUUID(GameProfile profile) {

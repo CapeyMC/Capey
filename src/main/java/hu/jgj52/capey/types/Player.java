@@ -15,7 +15,6 @@ import java.util.concurrent.Executors;
 public class Player {
     private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
     private static final HttpClient client = HttpClient.newHttpClient();
-    private static final Minecraft mc = Minecraft.getInstance();
     private static final Map<UUID, Player> players = new ConcurrentHashMap<>();
     public static Player of(UUID uuid) {
         return players.computeIfAbsent(uuid, Player::new);
@@ -55,6 +54,7 @@ public class Player {
     }
 
     public Cape getCape() {
+        if (cape == null) return null;
         return Cape.of(cape);
     }
 }

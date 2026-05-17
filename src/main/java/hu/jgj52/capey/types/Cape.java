@@ -51,6 +51,7 @@ public class Cape {
         if (file.exists()) {
             registerTextures();
         } else {
+            file.getParentFile().mkdirs();
             fetcher.submit(() -> {
                 try {
                     HttpRequest request = HttpRequest.newBuilder()
@@ -58,11 +59,12 @@ public class Cape {
                             .GET()
                             .build();
 
-                    HttpResponse<Path> response = client.send(request, HttpResponse.BodyHandlers.ofFile(path));
+                    HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
                     if (response.statusCode() == 404) {
                         identifier = null;
                     }
                     if (response.statusCode() == 200) {
+                        Files.write(path, response.body());
                         registerTextures();
                     }
                 } catch (Exception e) {
@@ -73,21 +75,30 @@ public class Cape {
     }
 
     private void registerTextures() {
-        try {
-            NativeImage img = NativeImage.read(Files.newInputStream(path));
-            identifier = //? >= 1.21.11 {
-                    Identifier
-                    //? } else {
-                    /*ResourceLocation
-                     *///? }
-                    .fromNamespaceAndPath("capey", "capes/" + uuid);
-            mc.execute(() -> {
-                DynamicTexture texture = new DynamicTexture(() -> "", img);
+        mc.execute(() -> {
+            try {
+                NativeImage img = NativeImage.read(Files.newInputStream(path));
+                //? >= 1.21.11 {
+                Identifier
+                 //? } else {
+                /*ResourceLocation
+                *///? }
+                        identifier =
+                //? >= 1.21.11 {
+                Identifier
+                //? } else {
+                /*ResourceLocation
+                 *///? }
+                        .fromNamespaceAndPath("capey", "capes/" + uuid);
+                DynamicTexture texture = new DynamicTexture(() -> "capey:capes/" + uuid, img);
+
+                mc.getTextureManager().register(identifier, texture);
                 texture.upload();
-            });
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+                this.identifier = identifier;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public UUID getUUID() {
