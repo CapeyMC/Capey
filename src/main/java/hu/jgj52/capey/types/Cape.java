@@ -19,9 +19,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,7 +29,7 @@ public class Cape {
     private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final Minecraft mc = Minecraft.getInstance();
-    private static final Map<UUID, Cape> capes = new HashMap<>();
+    private static final Map<UUID, Cape> capes = new ConcurrentHashMap<>();
     public static Cape of(UUID uuid) {
         return capes.computeIfAbsent(uuid, Cape::new);
     }
@@ -54,7 +54,7 @@ public class Cape {
             fetcher.submit(() -> {
                 try {
                     HttpRequest request = HttpRequest.newBuilder()
-                            .uri(new URI("https://capey.jgj52.hu/cape/" + uuid))
+                            .uri(new URI("https://capey.jgj52.hu/v1/cape/" + uuid))
                             .GET()
                             .build();
 
@@ -88,5 +88,19 @@ public class Cape {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public UUID getUUID() {
+        return uuid;
+    }
+
+    public
+    //? >= 1.21.11 {
+    Identifier
+    //? } else {
+    /*ResourceLocation
+     *///? }
+    getIdentifier() {
+        return identifier;
     }
 }
