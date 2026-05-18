@@ -1,5 +1,15 @@
 package hu.jgj52.capey.types;
 
+import hu.jgj52.capey.mixin.PlayerInfoMixin;
+//? >= 1.21.10 {
+import net.minecraft.core.ClientAsset;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.PlayerSkin;
+//? } else {
+/*import net.minecraft.client.resources.PlayerSkin;
+ *///? }
+import org.jspecify.annotations.NonNull;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -60,4 +70,37 @@ public class Player {
         if (cape == null) return null;
         return Cape.of(cape);
     }
+
+    public PlayerSkin fromSkin(PlayerSkin original) {
+        Cape cape = getCape();
+        if (cape == null) return original;
+        if (cape.getIdentifier() == null) return original;
+        return new PlayerSkin(
+                //? >= 1.21.10 {
+                original.body(),
+                new TextureImpl(cape.getIdentifier()), new TextureImpl(cape.getIdentifier()),
+                original.model(),
+                original.secure()
+                //? } else {
+                    /*original.texture(), original.textureUrl(),
+                    cape.getIdentifier(), cape.getIdentifier(),
+                    original.model(),
+                    original.secure()
+            *///? }
+        );
+    }
+
+    //? >= 1.21.10 {
+    public record TextureImpl(Identifier identifier) implements ClientAsset.Texture {
+        @Override
+        public @NonNull Identifier texturePath() {
+            return identifier;
+        }
+
+        @Override
+        public @NonNull Identifier id() {
+            return identifier;
+        }
+    }
+    //? }
 }

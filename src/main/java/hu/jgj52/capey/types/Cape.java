@@ -1,5 +1,7 @@
 package hu.jgj52.capey.types;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
@@ -19,20 +21,39 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.*;
 
 public class Cape {
     private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final Minecraft mc = Minecraft.getInstance();
+    private static final Gson gson = new Gson();
     private static final Map<UUID, Cape> capes = new ConcurrentHashMap<>();
     public static Cape of(UUID uuid) {
         return capes.computeIfAbsent(uuid, Cape::new);
+    }
+    public static List<UUID> all() {
+        List<UUID> uuids = new ArrayList<>();
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("https://capey.jgj52.hu/v1/capes"))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                JsonArray array = gson.fromJson(response.body(), JsonArray.class);
+                array.forEach(s -> uuids.add(UUID.fromString(s.getAsString())));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return uuids;
     }
     private static final Semaphore semaphore = new Semaphore(5);
 

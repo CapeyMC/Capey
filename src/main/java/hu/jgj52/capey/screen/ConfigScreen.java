@@ -19,8 +19,8 @@ public class ConfigScreen extends BetterScreen {
     }
 
     @Override
-    public void render(GuiGraphicsExtractor guiGraphicsExtractor, int i, int i1, float v) {
-
+    public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float v) {
+        graphics.fill(40, 20, width - 40, height - 20, 0x80000000);
     }
 
     @Override
