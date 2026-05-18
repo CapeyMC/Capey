@@ -15,6 +15,9 @@
     ],
     "main": [
       "hu.jgj52.capey.Capey"
+    ],
+    "modmenu": [
+      "hu.jgj52.capey.config.ModMenu"
     ]
   },
   "mixins": [
