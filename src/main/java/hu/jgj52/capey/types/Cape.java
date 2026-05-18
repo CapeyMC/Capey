@@ -24,6 +24,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 
 public class Cape {
     private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
@@ -33,6 +34,7 @@ public class Cape {
     public static Cape of(UUID uuid) {
         return capes.computeIfAbsent(uuid, Cape::new);
     }
+    private static final Semaphore semaphore = new Semaphore(5);
 
     private final UUID uuid;
     private final Path path;
@@ -54,6 +56,7 @@ public class Cape {
             file.getParentFile().mkdirs();
             fetcher.submit(() -> {
                 try {
+                    semaphore.acquire();
                     HttpRequest request = HttpRequest.newBuilder()
                             .uri(new URI("https://capey.jgj52.hu/v1/cape/" + uuid))
                             .GET()
@@ -69,6 +72,8 @@ public class Cape {
                     }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
+                } finally {
+                    semaphore.release();
                 }
             });
         }

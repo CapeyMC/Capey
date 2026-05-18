@@ -1,16 +1,12 @@
 package hu.jgj52.capey.types;
 
-import net.minecraft.client.Minecraft;
-
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class Player {
     private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
@@ -19,18 +15,23 @@ public class Player {
     public static Player of(UUID uuid) {
         return players.computeIfAbsent(uuid, Player::new);
     }
+    public static void reFetchAll() {
+        players.values().forEach(Player::reFetch);
+    }
+    private static final Semaphore semaphore = new Semaphore(5); // i like the server alive
 
     private final UUID uuid;
     private volatile UUID cape;
 
     private Player(UUID uuid) {
         this.uuid = uuid;
-        reFetch();
     }
 
     public void reFetch() {
         fetcher.submit(() -> {
             try {
+                semaphore.acquire();
+
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(new URI("https://capey.jgj52.hu/v1/player/" + uuid))
                         .GET()
@@ -45,8 +46,10 @@ public class Player {
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
+            } finally {
+                semaphore.release();
             }
-        });
+        }, fetcher);
     }
 
     public UUID getUUID() {
