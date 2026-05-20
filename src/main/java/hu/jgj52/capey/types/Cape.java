@@ -2,6 +2,7 @@ package hu.jgj52.capey.types;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
@@ -36,8 +37,10 @@ public class Cape {
     public static Cape of(UUID uuid) {
         return capes.computeIfAbsent(uuid, Cape::new);
     }
-    public static List<UUID> all() {
-        List<UUID> uuids = new ArrayList<>();
+    private static List<JsonObject> all = all(true);
+    public static List<JsonObject> all(boolean reload) {
+        if (!reload) return all;
+        List<JsonObject> capes = new ArrayList<>();
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI("https://capey.jgj52.hu/v1/capes"))
@@ -48,12 +51,13 @@ public class Cape {
 
             if (response.statusCode() == 200) {
                 JsonArray array = gson.fromJson(response.body(), JsonArray.class);
-                array.forEach(s -> uuids.add(UUID.fromString(s.getAsString())));
+                array.forEach(s -> capes.add(s.getAsJsonObject()));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return uuids;
+        all = capes;
+        return capes;
     }
     private static final Semaphore semaphore = new Semaphore(5);
 

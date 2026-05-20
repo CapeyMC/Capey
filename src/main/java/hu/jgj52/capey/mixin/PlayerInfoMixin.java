@@ -24,7 +24,7 @@ public class PlayerInfoMixin {
         PlayerInfo info = (PlayerInfo) (Object) this;
         Player player = Player.of(getUUID(info.getProfile()));
 
-        cir.setReturnValue(player.fromSkin(original));
+        cir.setReturnValue(player.fromSkin(() -> original).get());
     }
 
     @Unique

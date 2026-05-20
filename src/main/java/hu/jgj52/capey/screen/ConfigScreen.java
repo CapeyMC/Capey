@@ -1,10 +1,15 @@
 package hu.jgj52.capey.screen;
 
+import hu.jgj52.capey.types.Cape;
+import hu.jgj52.capey.types.Player;
 import hu.jgj52.screenapi.screen.BetterScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.PlayerSkinWidget;
 import net.minecraft.client.gui.screens.Screen;
+
+import java.util.UUID;
 
 public class ConfigScreen extends BetterScreen {
     private static final Minecraft mc = Minecraft.getInstance();
@@ -25,7 +30,15 @@ public class ConfigScreen extends BetterScreen {
 
     @Override
     protected void createWidgets(Font font) {
-
+        Cape.all(false).forEach(cape -> {
+            Player player = Player.of(UUID.fromString(cape.get("uploader").getAsString()));
+            widget(new PlayerSkinWidget(
+                    72,
+                    144,
+                    mc.getEntityModels(),
+                    player.fromSkin()
+            ));
+        });
     }
 
     @Override
