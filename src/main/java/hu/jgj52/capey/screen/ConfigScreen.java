@@ -30,13 +30,14 @@ public class ConfigScreen extends BetterScreen {
 
     @Override
     protected void createWidgets(Font font) {
-        Cape.all(false).forEach(cape -> {
-            Player player = Player.of(UUID.fromString(cape.get("uploader").getAsString()));
+        Cape.all(false).forEach(capeO -> {
+            Player player = Player.of(UUID.fromString(capeO.get("uploader").getAsString()));
+            Cape cape = Cape.of(UUID.fromString(capeO.get("uuid").getAsString()));
             widget(new PlayerSkinWidget(
                     72,
                     144,
                     mc.getEntityModels(),
-                    player.fromSkin()
+                    cape.fromSkin(player.getSkin())
             ));
         });
     }

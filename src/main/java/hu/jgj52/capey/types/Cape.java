@@ -14,19 +14,25 @@ Identifier
 /*ResourceLocation
 *///? }
 ;
+//? >= 1.21.10 {
+import net.minecraft.world.entity.player.PlayerSkin;
+import net.minecraft.core.ClientAsset;
+import org.jspecify.annotations.NonNull;
+//? } else {
+/*import net.minecraft.client.resources.PlayerSkin;
+import com.mojang.authlib.yggdrasil.ProfileResult;
+*///? }
 
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.io.File;
 import java.net.URI;
 import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.Supplier;
 
 public class Cape {
     private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
@@ -37,7 +43,7 @@ public class Cape {
     public static Cape of(UUID uuid) {
         return capes.computeIfAbsent(uuid, Cape::new);
     }
-    private static List<JsonObject> all = all(true);
+    private static List<JsonObject> all;
     public static List<JsonObject> all(boolean reload) {
         if (!reload) return all;
         List<JsonObject> capes = new ArrayList<>();
@@ -130,6 +136,40 @@ public class Cape {
             }
         });
     }
+
+    public Supplier<PlayerSkin> fromSkin(Supplier<PlayerSkin> original) {
+        return () -> {
+            PlayerSkin orig = original.get();
+            if (getIdentifier() == null) return orig;
+            return new PlayerSkin(
+                    //? >= 1.21.10 {
+                    orig.body(),
+                    new TextureImpl(getIdentifier()), new TextureImpl(getIdentifier()),
+                    orig.model(),
+                    orig.secure()
+                    //? } else {
+                    /*orig.texture(), orig.textureUrl(),
+                    getIdentifier(), getIdentifier(),
+                    orig.model(),
+                    orig.secure()
+            *///? }
+            );
+        };
+    }
+
+    //? >= 1.21.10 {
+    public record TextureImpl(Identifier identifier) implements ClientAsset.Texture {
+        @Override
+        public @NonNull Identifier texturePath() {
+            return identifier;
+        }
+
+        @Override
+        public @NonNull Identifier id() {
+            return identifier;
+        }
+    }
+    //? }
 
     public UUID getUUID() {
         return uuid;

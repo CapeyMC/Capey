@@ -1,15 +1,8 @@
 package hu.jgj52.capey.types;
 
-//? >= 1.21.10 {
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.ClientAsset;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.PlayerSkin;
-//? } else {
-/*import net.minecraft.client.resources.PlayerSkin;
- *///? }
-import org.jspecify.annotations.NonNull;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -66,35 +59,7 @@ public class Player {
         }, fetcher);
     }
 
-    public UUID getUUID() {
-        return uuid;
-    }
-
-    public Cape getCape() {
-        if (cape == null) return null;
-        return Cape.of(cape);
-    }
-
-    public Supplier<PlayerSkin> fromSkin(Supplier<PlayerSkin> original) {
-        Cape cape = getCape();
-        if (cape == null) return original;
-        if (cape.getIdentifier() == null) return original;
-        return () -> new PlayerSkin(
-                //? >= 1.21.10 {
-                original.get().body(),
-                new TextureImpl(cape.getIdentifier()), new TextureImpl(cape.getIdentifier()),
-                original.get().model(),
-                original.get().secure()
-                //? } else {
-                    /*original.get().texture(), original.get().textureUrl(),
-                    cape.getIdentifier(), cape.getIdentifier(),
-                    original.get().model(),
-                    original.get().secure()
-            *///? }
-        );
-    }
-
-    public Supplier<PlayerSkin> fromSkin() {
+    public Supplier<PlayerSkin> getSkin() {
         Optional<GameProfile> opt = mc.services().profileResolver().fetchById(uuid);
         if (opt.isEmpty()) return null;
         GameProfile profile = opt.get();
@@ -114,26 +79,21 @@ public class Player {
             }
         });
         *///? }
-        return fromSkin(
+        return
                 //? >= 1.21.10 {
                 mc.getSkinManager().createLookup(profile, true)
                 //? } else {
                 /*skin::get
                  *///? }
-        );
+        ;
     }
 
-    //? >= 1.21.10 {
-    public record TextureImpl(Identifier identifier) implements ClientAsset.Texture {
-        @Override
-        public @NonNull Identifier texturePath() {
-            return identifier;
-        }
-
-        @Override
-        public @NonNull Identifier id() {
-            return identifier;
-        }
+    public UUID getUUID() {
+        return uuid;
     }
-    //? }
+
+    public Cape getCape() {
+        if (cape == null) return null;
+        return Cape.of(cape);
+    }
 }

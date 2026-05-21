@@ -1,6 +1,7 @@
 package hu.jgj52.capey.mixin;
 
 import com.mojang.authlib.GameProfile;
+import hu.jgj52.capey.types.Cape;
 import hu.jgj52.capey.types.Player;
 import net.minecraft.client.multiplayer.PlayerInfo;
 //? >= 1.21.10 {
@@ -23,8 +24,11 @@ public class PlayerInfoMixin {
         PlayerSkin original = cir.getReturnValue();
         PlayerInfo info = (PlayerInfo) (Object) this;
         Player player = Player.of(getUUID(info.getProfile()));
+        Cape cape = player.getCape();
 
-        cir.setReturnValue(player.fromSkin(() -> original).get());
+        if (cape == null) return;
+
+        cir.setReturnValue(cape.fromSkin(() -> original).get());
     }
 
     @Unique
