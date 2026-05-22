@@ -16,11 +16,14 @@ import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.entity.player.PlayerSkin;
 import org.jspecify.annotations.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 public class ConfigScreen extends AbstractConfigScreen {
+    private static final List<FakePlayer> fakes = new ArrayList<>();
     private static class FakePlayer extends RemotePlayer {
         private final Supplier<PlayerSkin> skin;
 
@@ -33,6 +36,8 @@ public class ConfigScreen extends AbstractConfigScreen {
                 skinParts |= (byte) part.getMask();
             }
             getEntityData().set(net.minecraft.world.entity.player.Player.DATA_PLAYER_MODE_CUSTOMISATION, skinParts);
+
+            fakes.add(this);
         }
 
         @Override
@@ -46,12 +51,16 @@ public class ConfigScreen extends AbstractConfigScreen {
     public ConfigScreen(Component title, Screen previous) {
         super(title, previous);
 
-        WGridPanel root = new WGridPanel(0);
+        WGridPanel root = new WGridPanel(1);
         root.setInsets(Insets.ROOT_PANEL);
         setRootPanel(root);
 
+        WGridPanel buttons = new WGridPanel(0);
+        buttons.setInsets(Insets.NONE);
+
         if (mc.level != null) {
             AtomicInteger offset = new AtomicInteger();
+            int perRow = mc.getWindow().getGuiScaledWidth() / 80 - 2;
             Cape.all(false).forEach(capeO -> {
                 Player player = Player.of(UUID.fromString(capeO.get("uploader").getAsString()));
                 Cape cape = Cape.of(UUID.fromString(capeO.get("uuid").getAsString()));
@@ -67,9 +76,13 @@ public class ConfigScreen extends AbstractConfigScreen {
                 preview.setRotationX(164);
                 preview.setRotationY(5);
                 preview.setShowBackground(true);
-                root.add(preview, offset.getAndIncrement() * 10 + 70, 14, 70, 140);
+                int i = offset.getAndIncrement();
+                root.add(preview, (i % perRow) * 80, (i / perRow) * 100, 70, 140);
             });
         }
+
+        root.validate(this);
+        root.setHost(this);
     }
 
     @Override
