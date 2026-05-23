@@ -1,8 +1,11 @@
 package hu.jgj52.capey.screen;
 
 import com.mojang.authlib.GameProfile;
+import dev.tr7zw.trender.gui.TriState;
 import dev.tr7zw.trender.gui.client.AbstractConfigScreen;
+import dev.tr7zw.trender.gui.widget.WButton;
 import dev.tr7zw.trender.gui.widget.WGridPanel;
+import dev.tr7zw.trender.gui.widget.WScrollPanel;
 import dev.tr7zw.trender.gui.widget.data.Insets;
 import hu.jgj52.capey.types.Cape;
 import hu.jgj52.capey.types.Player;
@@ -19,6 +22,7 @@ import org.jspecify.annotations.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
@@ -51,12 +55,23 @@ public class ConfigScreen extends AbstractConfigScreen {
     public ConfigScreen(Component title, Screen previous) {
         super(title, previous);
 
-        WGridPanel root = new WGridPanel(1);
+        WGridPanel root = new WGridPanel(0);
         root.setInsets(Insets.ROOT_PANEL);
         setRootPanel(root);
 
+        WGridPanel capePanel = new WGridPanel(1);
+
+        WScrollPanel scrollPanel = new WScrollPanel(capePanel);
+        scrollPanel.setScrollingHorizontally(TriState.FALSE);
+        scrollPanel.setScrollingVertically(TriState.DEFAULT);
+        root.add(scrollPanel, 10, 25);
+
         WGridPanel buttons = new WGridPanel(0);
         buttons.setInsets(Insets.NONE);
+
+        WButton reload = new WButton();
+        reload.setOnClick(() -> CompletableFuture.runAsync(() -> Cape.all(true)));
+        buttons.add(reload, 10, 10, 6, 2);
 
         if (mc.level != null) {
             AtomicInteger offset = new AtomicInteger();
@@ -77,8 +92,9 @@ public class ConfigScreen extends AbstractConfigScreen {
                 preview.setRotationY(5);
                 preview.setShowBackground(true);
                 int i = offset.getAndIncrement();
-                root.add(preview, (i % perRow) * 80, (i / perRow) * 100, 70, 140);
+                capePanel.add(preview, (i % perRow) * 80, (i / perRow) * 100 + 15, 70, 140);
             });
+            scrollPanel.setSize(perRow * 80, Math.min(offset.get() / perRow * 100, mc.getWindow().getGuiScaledHeight() - 150));
         }
 
         root.validate(this);
