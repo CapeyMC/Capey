@@ -19,6 +19,7 @@ repositories {
     // for more information about repositories.
     maven { url "https://maven.terraformersmc.com/releases" }
     maven { url "https://maven.tr7zw.dev/repository/maven-public" }
+    maven { url "https://maven.jgj52.hu/repository/maven-snapshots" }
 }
 
 dependencies {

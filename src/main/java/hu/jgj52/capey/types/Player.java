@@ -23,6 +23,7 @@ public class Player {
         return players.computeIfAbsent(uuid, Player::new);
     }
     public static void reFetchAll() {
+        System.out.println(players);
         players.values().forEach(Player::reFetch);
     }
     private static final Semaphore semaphore = new Semaphore(5); // i like the server alive
@@ -32,6 +33,7 @@ public class Player {
 
     private Player(UUID uuid) {
         this.uuid = uuid;
+        reFetch();
     }
 
     public void reFetch() {
@@ -56,7 +58,7 @@ public class Player {
             } finally {
                 semaphore.release();
             }
-        }, fetcher);
+        });
     }
 
     public Supplier<PlayerSkin> getSkin() {
