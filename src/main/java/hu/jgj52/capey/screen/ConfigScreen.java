@@ -1,14 +1,14 @@
 package hu.jgj52.capey.screen;
 
 import com.google.common.net.HttpHeaders;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import dev.tr7zw.trender.gui.TriState;
 import dev.tr7zw.trender.gui.client.AbstractConfigScreen;
+import dev.tr7zw.trender.gui.client.BackgroundPainter;
 import dev.tr7zw.trender.gui.client.CottonClientScreen;
-import dev.tr7zw.trender.gui.widget.WButton;
+import dev.tr7zw.trender.gui.client.RenderContext;
 import dev.tr7zw.trender.gui.widget.WGridPanel;
+import dev.tr7zw.trender.gui.widget.WPanel;
 import dev.tr7zw.trender.gui.widget.WPlayerPreview;
 import dev.tr7zw.trender.gui.widget.WScrollPanel;
 import dev.tr7zw.trender.gui.widget.data.InputResult;
@@ -62,13 +62,23 @@ public class ConfigScreen extends AbstractConfigScreen {
 
     private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
     private static final HttpClient client = HttpClient.newHttpClient();
-    private static final Gson gson = new Gson();
     private static final Minecraft mc = Minecraft.getInstance();
 
     public ConfigScreen(Component title, Screen previous) {
         super(title, previous);
 
-        WGridPanel root = new WGridPanel(0);
+        WGridPanel root = new WGridPanel(0) {
+            @Override
+            public void paint(RenderContext context, int x, int y, int mouseX, int mouseY) {
+                context.getGuiGraphics().enableScissor(
+                        x,
+                        y,
+                        x + getWidth(),
+                        y + getHeight()
+                );
+                super.paint(context, x, y, mouseX, mouseY);
+            }
+        };
         root.setInsets(Insets.ROOT_PANEL);
         setRootPanel(root);
 
@@ -125,7 +135,7 @@ public class ConfigScreen extends AbstractConfigScreen {
                 preview.setRotationY(5);
                 preview.setShowBackground(false);
                 int i = offset.getAndIncrement();
-                capePanel.add(preview, (i % perRow) * 80, (i / perRow) * 100 + 15, 70, 140);
+                capePanel.add(preview, (i % perRow) * 80, (i / perRow) * 100, 70, 140);
             });
             scrollPanel.setSize(perRow * 80, Math.min(offset.get() / perRow * 100, mc.getWindow().getGuiScaledHeight() - 150));
         }

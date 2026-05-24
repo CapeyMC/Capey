@@ -8,6 +8,6 @@ import net.minecraft.network.chat.Component;
 public class ModMenu implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return parent -> new ConfigScreen(Component.translatable("capey.config.main.title"), parent).createScreen();
+        return parent -> new ConfigScreen(Component.empty(), parent).createScreen();
     }
 }

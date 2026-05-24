@@ -23,7 +23,6 @@ public class Player {
         return players.computeIfAbsent(uuid, Player::new);
     }
     public static void reFetchAll() {
-        System.out.println(players);
         players.values().forEach(Player::reFetch);
     }
     private static final Semaphore semaphore = new Semaphore(5); // i like the server alive
