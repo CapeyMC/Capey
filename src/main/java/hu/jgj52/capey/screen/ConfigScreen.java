@@ -7,12 +7,10 @@ import dev.tr7zw.trender.gui.client.AbstractConfigScreen;
 import dev.tr7zw.trender.gui.client.BackgroundPainter;
 import dev.tr7zw.trender.gui.client.CottonClientScreen;
 import dev.tr7zw.trender.gui.client.RenderContext;
-import dev.tr7zw.trender.gui.widget.WGridPanel;
-import dev.tr7zw.trender.gui.widget.WPanel;
-import dev.tr7zw.trender.gui.widget.WPlayerPreview;
-import dev.tr7zw.trender.gui.widget.WScrollPanel;
+import dev.tr7zw.trender.gui.widget.*;
 import dev.tr7zw.trender.gui.widget.data.InputResult;
 import dev.tr7zw.trender.gui.widget.data.Insets;
+import dev.tr7zw.trender.gui.widget.data.VerticalAlignment;
 import hu.jgj52.capey.Capey;
 import hu.jgj52.capey.types.Cape;
 import hu.jgj52.capey.types.Player;
@@ -67,6 +65,7 @@ public class ConfigScreen extends AbstractConfigScreen {
     public ConfigScreen(Component title, Screen previous) {
         super(title, previous);
 
+        // i hate rendering
         WGridPanel root = new WGridPanel(0) {
             @Override
             public void paint(RenderContext context, int x, int y, int mouseX, int mouseY) {
@@ -122,7 +121,6 @@ public class ConfigScreen extends AbstractConfigScreen {
                                 if (response.statusCode() != 200) {
                                     throw new RuntimeException(response.body());
                                 }
-                                Player.reFetchAll();
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
@@ -130,12 +128,14 @@ public class ConfigScreen extends AbstractConfigScreen {
                         return InputResult.PROCESSED;
                     }
                 };
+                WText text = new WText(Component.literal(capeO.get("name").getAsString()).withColor(0xffffffff));
                 previews.add(preview);
                 preview.setRotationX(164);
                 preview.setRotationY(5);
                 preview.setShowBackground(false);
                 int i = offset.getAndIncrement();
                 capePanel.add(preview, (i % perRow) * 80, (i / perRow) * 100, 70, 140);
+                capePanel.add(text, (i % perRow) * 80, (i / perRow) * 100 + 90, 70, mc.font.lineHeight);
             });
             scrollPanel.setSize(perRow * 80, Math.min(offset.get() / perRow * 100, mc.getWindow().getGuiScaledHeight() - 150));
         }
