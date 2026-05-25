@@ -156,6 +156,14 @@ public class ConfigScreen extends AbstractConfigScreen {
                             )
                 ).build()
         ).setPosition(10, 10);
+        screen.addRenderableWidget(Button.builder(
+                Component.translatable("capey.config.main.profile"),
+                button ->
+                        mc.execute(() ->
+                            mc.setScreen(new ProfileScreen(Component.empty(), screen).createScreen())
+                        )
+                ).build()
+        ).setPosition(screen.getWidth() - 10, 10);
         return screen;
     }
 
