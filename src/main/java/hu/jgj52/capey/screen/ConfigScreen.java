@@ -113,7 +113,7 @@ public class ConfigScreen extends AbstractConfigScreen {
                                 HttpRequest request = HttpRequest.newBuilder()
                                         .uri(new URI("https://capey.jgj52.hu/v1/player"))
                                         .POST(HttpRequest.BodyPublishers.ofString(cape.getUUID().toString()))
-                                        .header(HttpHeaders.AUTHORIZATION, Capey.key)
+                                        .header(HttpHeaders.AUTHORIZATION, Capey.keys.get(mc.getUser().getProfileId()))
                                         .build();
 
                                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
