@@ -108,12 +108,15 @@ public class ConfigScreen extends AbstractConfigScreen {
                     public InputResult onClick(int x, int y, int button) {
                         previews.forEach(w -> w.setShowBackground(false));
                         setShowBackground(true);
+                        String nowUUID = mc.getUser().getProfileId().toString();
+                        Capey.local.getContent().addProperty(nowUUID, cape.getUUID().toString());
+                        Capey.local.save(); // this is only local on purpose
                         fetcher.submit(() -> {
                             try {
                                 HttpRequest request = HttpRequest.newBuilder()
                                         .uri(new URI("https://capey.jgj52.hu/v1/player"))
                                         .POST(HttpRequest.BodyPublishers.ofString(cape.getUUID().toString()))
-                                        .header(HttpHeaders.AUTHORIZATION, Capey.keys.get(mc.getUser().getProfileId()))
+                                        .header(HttpHeaders.AUTHORIZATION, Capey.keys.getContent().get(nowUUID).getAsString())
                                         .build();
 
                                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

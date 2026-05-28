@@ -1,6 +1,7 @@
 package hu.jgj52.capey.types;
 
 import com.mojang.authlib.GameProfile;
+import hu.jgj52.capey.Capey;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.PlayerSkin;
 
@@ -35,7 +36,11 @@ public class Player {
         reFetch();
     }
 
-    public void reFetch() {
+    public void reFetch(boolean local) {
+        if (local && Capey.local.getContent().has(uuid.toString())) {
+            cape = UUID.fromString(Capey.local.getContent().get(uuid.toString()).getAsString());
+            return;
+        }
         fetcher.submit(() -> {
             try {
                 semaphore.acquire();
@@ -58,6 +63,9 @@ public class Player {
                 semaphore.release();
             }
         });
+    }
+    public void reFetch() {
+        reFetch(true);
     }
 
     public Supplier<PlayerSkin> getSkin() {
