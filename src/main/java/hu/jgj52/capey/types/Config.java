@@ -15,10 +15,15 @@ public class Config {
     private final JsonObject content;
     public Config(String name) {
         file = new File(dir, name + ".json");
-        try (FileInputStream fin = new FileInputStream(file)) {
-            content = gson.fromJson(new InputStreamReader(fin), JsonObject.class);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+        if (file.exists()) {
+            try (FileInputStream fin = new FileInputStream(file)) {
+                content = gson.fromJson(new InputStreamReader(fin), JsonObject.class);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            content = new JsonObject();
         }
     }
 
