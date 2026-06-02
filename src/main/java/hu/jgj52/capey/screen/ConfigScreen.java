@@ -4,13 +4,11 @@ import com.google.common.net.HttpHeaders;
 import com.mojang.authlib.GameProfile;
 import dev.tr7zw.trender.gui.TriState;
 import dev.tr7zw.trender.gui.client.AbstractConfigScreen;
-import dev.tr7zw.trender.gui.client.BackgroundPainter;
 import dev.tr7zw.trender.gui.client.CottonClientScreen;
 import dev.tr7zw.trender.gui.client.RenderContext;
 import dev.tr7zw.trender.gui.widget.*;
 import dev.tr7zw.trender.gui.widget.data.InputResult;
 import dev.tr7zw.trender.gui.widget.data.Insets;
-import dev.tr7zw.trender.gui.widget.data.VerticalAlignment;
 import hu.jgj52.capey.Capey;
 import hu.jgj52.capey.types.Cape;
 import hu.jgj52.capey.types.Player;
@@ -88,9 +86,11 @@ public class ConfigScreen extends AbstractConfigScreen {
         scrollPanel.setScrollingVertically(TriState.DEFAULT);
         root.add(scrollPanel, 10, 25);
 
-        if (mc.level != null) {
+        if (mc.level != null && mc.player != null) {
             AtomicInteger offset = new AtomicInteger();
             int perRow = mc.getWindow().getGuiScaledWidth() / 80 - 2;
+            Player local = Player.of(mc.player.getUUID());
+            Supplier<Cape> selected = local::getCape;
             List<WPlayerPreview> previews = new ArrayList<>();
             Cape.all(false).forEach(capeO -> {
                 Player player = Player.of(UUID.fromString(capeO.get("uploader").getAsString()));
@@ -105,18 +105,39 @@ public class ConfigScreen extends AbstractConfigScreen {
                 );
                 WPlayerPreview preview = new WPlayerPreview(mcPlayer) {
                     @Override
+                    public void paint(RenderContext context, int x, int y, int mouseX, int mouseY) {
+                        super.paint(context, x, y, mouseX, mouseY);
+                        if (selected.get() == cape && !isShowBackground()) {
+                            previews.forEach(w -> w.setShowBackground(false));
+                            setShowBackground(true);
+                        } else if (selected.get() == null && isShowBackground()) {
+                            setShowBackground(false);
+                        }
+                    }
+
+                    @Override
                     public InputResult onClick(int x, int y, int button) {
-                        previews.forEach(w -> w.setShowBackground(false));
-                        setShowBackground(true);
-                        String nowUUID = mc.getUser().getProfileId().toString();
-                        Capey.local.getContent().addProperty(nowUUID, cape.getUUID().toString());
-                        Capey.local.save(); // this is only local on purpose
+                        String nowUUID = mc.player.getUUID().toString();
+                        String capeUUID = cape.getUUID().toString();
+                        if (isShowBackground()) Capey.local.getContent().remove(nowUUID);
+                        else Capey.local.getContent().addProperty(nowUUID, capeUUID);
+                        Capey.local.save();
+                        local.reFetch();
                         fetcher.submit(() -> {
                             try {
                                 HttpRequest request = HttpRequest.newBuilder()
                                         .uri(new URI("https://capey.jgj52.hu/v1/player"))
-                                        .POST(HttpRequest.BodyPublishers.ofString(cape.getUUID().toString()))
-                                        .header(HttpHeaders.AUTHORIZATION, Capey.keys.getContent().get(nowUUID).getAsString())
+                                        .POST(
+                                                isShowBackground()
+                                                ? HttpRequest.BodyPublishers.noBody()
+                                                : HttpRequest.BodyPublishers.ofString(capeUUID)
+                                        )
+                                        .header(
+                                                HttpHeaders.AUTHORIZATION,
+                                                Capey.keys.getContent().has(nowUUID)
+                                                ? Capey.keys.getContent().get(nowUUID).getAsString()
+                                                : ""
+                                        )
                                         .build();
 
                                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
