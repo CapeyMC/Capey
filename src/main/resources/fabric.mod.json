@@ -3,9 +3,9 @@
   "id": "capey",
   "version": "${version}",
   "name": "Capey",
-  "description": "",
+  "description": "Have a custom cape which others who use this mod can see too",
   "authors": ["JGJ52"],
-  "contact": {"Discord Server": "https://discord.gg/5pjP2DxQK8"},
+  "contact": {},
   "license": "GPL-3.0",
   "icon": "assets/capey/icon.png",
   "environment": "client",
@@ -31,7 +31,8 @@
   "custom": {
     "modmenu": {
       "links": {
-        "modmenu.modrinth": "https://modrinth.com/mod/capey"
+        "modmenu.modrinth": "https://modrinth.com/mod/capey",
+        "modmenu.discord": "https://discord.gg/5pjP2DxQK8"
       },
       "update_checker": true
     }
