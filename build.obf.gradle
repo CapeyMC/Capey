@@ -39,7 +39,7 @@ dependencies {
 processResources {
     inputs.property "version", project.version
     inputs.property "minecraft_version", project.minecraft_version
-    inputs.property "minecraft_lower_version", project.minecraft_lower_version
+    inputs.property "minecraft_higher_version", project.minecraft_higher_version
     inputs.property "loader_version", project.loader_version
     inputs.property "mixins_file", project.mixins_file
     filteringCharset "UTF-8"
@@ -47,7 +47,7 @@ processResources {
     filesMatching("fabric.mod.json") {
         expand "version": project.version,
                 "minecraft_version": project.minecraft_version,
-                "minecraft_lower_version": project.minecraft_lower_version,
+                "minecraft_higher_version": project.minecraft_higher_version,
                 "loader_version": project.loader_version,
                 "mixins_file": project.mixins_file
     }
