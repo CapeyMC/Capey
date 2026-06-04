@@ -1,4 +1,7 @@
 {
   "capey.config.main.reload": "Reload capes",
-  "capey.config.main.profile": "My profile"
+  "capey.config.main.profile": "My profile",
+  "capey.message.token.your": "Your Capey token is:",
+  "capey.message.token.share": "Do NOT share this with anyone!",
+  "capey.message.token.auto": "Capey automatically saved this token."
 }

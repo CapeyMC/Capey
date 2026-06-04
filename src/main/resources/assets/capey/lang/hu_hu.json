@@ -1,4 +1,7 @@
 {
   "capey.config.main.reload": "Köpenyek újratöltése",
-  "capey.config.main.profile": "Én profilom"
+  "capey.config.main.profile": "Én profilom",
+  "capey.message.token.your": "A Capey tokened:",
+  "capey.message.token.share": "NE oszd meg ezt senkivel!",
+  "capey.message.token.auto": "A token automatikusan le lett mentve."
 }

@@ -134,8 +134,8 @@ public class ConfigScreen extends AbstractConfigScreen {
                                         )
                                         .header(
                                                 HttpHeaders.AUTHORIZATION,
-                                                Capey.keys.getContent().has(nowUUID)
-                                                ? Capey.keys.getContent().get(nowUUID).getAsString()
+                                                Capey.tokens.getContent().has(nowUUID)
+                                                ? Capey.tokens.getContent().get(nowUUID).getAsString()
                                                 : ""
                                         )
                                         .build();

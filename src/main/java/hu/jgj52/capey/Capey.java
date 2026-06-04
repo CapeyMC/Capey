@@ -7,7 +7,7 @@ import net.fabricmc.api.ModInitializer;
 
 public class Capey implements ModInitializer {
     public static WebSocket webSocket;
-    public static Config keys;
+    public static Config tokens;
     public static Config local;
     public static Config config;
 
@@ -15,7 +15,7 @@ public class Capey implements ModInitializer {
     public void onInitialize() {
         webSocket = new WebSocket();
         Cape.all(true);
-        keys = new Config("keys");
+        tokens = new Config("tokens");
         local = new Config("local");
         config = new Config("config");
     }
