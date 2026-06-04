@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile;
 import hu.jgj52.capey.types.Cape;
 import hu.jgj52.capey.types.Player;
 import net.minecraft.client.multiplayer.PlayerInfo;
-//? >= 1.21.10 {
+//? >= 1.21.9 {
 import net.minecraft.world.entity.player.PlayerSkin;
 //? } else {
 /*import net.minecraft.client.resources.PlayerSkin;

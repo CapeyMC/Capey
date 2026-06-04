@@ -14,7 +14,7 @@ Identifier
 /*ResourceLocation
 *///? }
 ;
-//? >= 1.21.10 {
+//? >= 1.21.9 {
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.core.ClientAsset;
 import org.jspecify.annotations.NonNull;
@@ -142,7 +142,7 @@ public class Cape {
             PlayerSkin orig = original.get();
             if (getIdentifier() == null) return orig;
             return new PlayerSkin(
-                    //? >= 1.21.10 {
+                    //? >= 1.21.9 {
                     orig.body(),
                     new TextureImpl(getIdentifier()), new TextureImpl(getIdentifier()),
                     orig.model(),
