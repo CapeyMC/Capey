@@ -15,7 +15,7 @@ public class WebSocket implements java.net.http.WebSocket.Listener {
     public WebSocket() {
         try {
             webSocket = client.newWebSocketBuilder()
-                    .buildAsync(URI.create("wss://capey.jgj52.hu/v1"), this)
+                    .buildAsync(URI.create("wss://api.capey.app/v1"), this)
                     .join();
         } catch (Exception e) {
             throw new RuntimeException(e);
