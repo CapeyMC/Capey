@@ -26,7 +26,8 @@
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric-api": "*",
-    "minecraft": ">=${minecraft_version} <=${minecraft_higher_version}"
+    "minecraft": ">=${minecraft_version} <=${minecraft_higher_version}",
+    "screenapi": "${screenapi_version}"
   },
   "custom": {
     "modmenu": {

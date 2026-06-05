@@ -36,6 +36,7 @@ processResources {
     inputs.property "minecraft_version", project.minecraft_version
     inputs.property "minecraft_higher_version", project.minecraft_higher_version
     inputs.property "loader_version", project.loader_version
+    inputs.property "screenapi_version", project.screenapi_version
     inputs.property "mixins_file", project.mixins_file
     filteringCharset "UTF-8"
 
@@ -44,6 +45,7 @@ processResources {
                 "minecraft_version": project.minecraft_version,
                 "minecraft_higher_version": project.minecraft_higher_version,
                 "loader_version": project.loader_version,
+                "screenapi_version": project.screenapi_version,
                 "mixins_file": project.mixins_file
     }
 }
