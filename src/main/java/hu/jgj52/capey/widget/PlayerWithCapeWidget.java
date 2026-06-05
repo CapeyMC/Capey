@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -42,28 +43,61 @@ public class PlayerWithCapeWidget extends AbstractWidget {
     }
 
     private final FakePlayer player;
-    public PlayerWithCapeWidget(int x, int y, int width, int height, FakePlayer player) {
+    private final int scale;
+    private boolean background = false;
+    private final Quaternionf rotation = new Quaternionf()
+            .rotateX((float) Math.toRadians(160))
+            .rotateY((float) Math.toRadians(200));
+    public PlayerWithCapeWidget(int x, int y, int width, int height, FakePlayer player, int scale) {
         super(x, y, width, height, Component.empty());
         this.player = player;
+        this.scale = scale;
+    }
+    public PlayerWithCapeWidget(int x, int y, int width, int height, FakePlayer player) {
+        this(x, y, width, height, player, 40);
+    }
+
+    public void background(boolean background) {
+        this.background = background;
+    }
+
+    public boolean background() {
+        return background;
     }
 
     @Override
     protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        if (background) {
+            graphics.fill(
+                    getX(),
+                    getY(),
+                    getX() + getWidth(),
+                    getY() + getHeight(),
+                    0xff000000
+            );
+        }
+
         EntityRenderer<FakePlayer, EntityRenderState> renderer = (EntityRenderer<FakePlayer, EntityRenderState>) mc.getEntityRenderDispatcher().getRenderer(player);
         EntityRenderState state = renderer.createRenderState();
         renderer.extractRenderState(player, state, a);
 
         graphics.entity(
                 state,
-                40,
-                new Vector3f(0, 0, 0),
-                new Quaternionf().rotateY(60),
+                scale,
+                new Vector3f(0, 0.7f, 0),
+                rotation,
                 new Quaternionf(),
-                10,
-                10,
-                200,
-                200
+                getX(),
+                getY(),
+                getX() + getWidth(),
+                getY() + getHeight()
         );
+    }
+
+    @Override
+    protected void onDrag(@NonNull MouseButtonEvent event, double dx, double dy) {
+        rotation.rotateY((float) Math.toRadians(dx * 2.5));
+        super.onDrag(event, dx, dy);
     }
 
     @Override
