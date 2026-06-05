@@ -10,6 +10,7 @@ import hu.jgj52.screenapi.screen.BetterScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -17,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.PlayerSkin;
 import org.jspecify.annotations.NonNull;
 
+import java.awt.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -24,9 +26,9 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
@@ -73,7 +75,7 @@ public class ConfigScreen extends BetterScreen {
                 int i = offset.getAndIncrement();
                 all.add(widget(new PlayerWithCapeWidget(
                         (i % perRow) * 80 + (width - perRow * 80) / 2,
-                        (i / perRow) * 100,
+                        (i / perRow) * 100 + 50,
                         70,
                         100,
                         p
@@ -128,14 +130,49 @@ public class ConfigScreen extends BetterScreen {
                 }));
                 widget(new StringWidget(
                         (i % perRow) * 80 + (width - perRow * 80) / 2,
-                        (i / perRow) * 100 + 90,
+                        (i / perRow) * 100 + 90 + 50,
                         70,
                         font.lineHeight,
                         Component.literal(capeO.get("name").getAsString()),
                         font
                 ));
             });
+        } else {
+            Component text = Component.translatable("capey.config.main.level").withColor(Color.RED.getRGB());
+            widget(new StringWidget(
+                    (width - font.width(text)) / 2,
+                    (height - font.lineHeight) / 2,
+                    font.width(text),
+                    font.lineHeight,
+                    text,
+                    font
+            ));
         }
+        widget(
+                Button.builder(
+                                Component.translatable("capey.config.main.reload"),
+                                button ->
+                                    CompletableFuture.supplyAsync(() ->
+                                        Cape.all(true)).thenAccept(capes ->
+                                        mc.execute(this::onClose)
+                                    )
+                        )
+                        .bounds(10, 10, 80, 20)
+                        .build(),
+                "reload",
+                true
+        );
+        widget(
+                Button.builder(
+                                Component.translatable("capey.config.main.profile"),
+                                button ->
+                                    mc.setScreen(new ProfileScreen(this))
+                        )
+                        .bounds(10, 40, 80, 20)
+                        .build(),
+                "profile",
+                true
+        );
     }
 
     @Override
