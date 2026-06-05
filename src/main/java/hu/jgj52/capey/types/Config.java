@@ -12,9 +12,25 @@ public class Config {
     private static final File dir = Path.of(FabricLoader.getInstance().getConfigDir().toString(), "capey").toFile();
 
     private final File file;
-    private final JsonObject content;
+    private volatile JsonObject content;
     public Config(String name) {
         file = new File(dir, name + ".json");
+        reload();
+    }
+
+    public JsonObject get() {
+        return content;
+    }
+
+    public void save() {
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(gson.toJson(content).getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void reload() {
         if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
         if (file.exists()) {
             try (FileInputStream fin = new FileInputStream(file)) {
@@ -24,18 +40,6 @@ public class Config {
             }
         } else {
             content = new JsonObject();
-        }
-    }
-
-    public JsonObject getContent() {
-        return content;
-    }
-
-    public void save() {
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            fos.write(gson.toJson(content).getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 }

@@ -23,7 +23,7 @@ public class ConnectionMixin {
             Connection connection = (Connection) (Object) this;
 
             if (connection.getRemoteAddress() instanceof InetSocketAddress addr) {
-                if (addr.getHostName().equals("deb.jgj52.hu") && addr.getPort() == 61250) {
+                if (addr.getHostName().equals("deb.jgj52.dev") && addr.getPort() == 61250) {
                     String reasonS = reason.getString();
                     String[] split = reasonS.split("\\$");
 
@@ -31,7 +31,7 @@ public class ConnectionMixin {
                     String uuid = Minecraft.getInstance().getUser().getProfileId().toString();
                     String token = split[1];
 
-                    tokens.getContent().addProperty(uuid, token);
+                    tokens.get().addProperty(uuid, token);
                     tokens.save();
                 }
             }

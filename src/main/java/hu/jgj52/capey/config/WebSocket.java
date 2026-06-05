@@ -1,4 +1,4 @@
-package hu.jgj52.capey.config;
+package hu.jgj52.capey.config; // idk why put this here
 
 import hu.jgj52.capey.types.Player;
 

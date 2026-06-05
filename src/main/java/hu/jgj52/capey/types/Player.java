@@ -41,8 +41,8 @@ public class Player {
     }
 
     public void reFetch(boolean local) {
-        if (local && Capey.local.getContent().has(uuid.toString())) {
-            cape = UUID.fromString(Capey.local.getContent().get(uuid.toString()).getAsString());
+        if (local && Capey.local.get().has(uuid.toString())) {
+            cape = UUID.fromString(Capey.local.get().get(uuid.toString()).getAsString());
             return;
         }
         fetcher.submit(() -> {
@@ -50,7 +50,7 @@ public class Player {
                 semaphore.acquire();
 
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(new URI("https://capey.jgj52.hu/v1/player/" + uuid))
+                        .uri(new URI("https://api.capey.app/v1/player/" + uuid))
                         .GET()
                         .build();
 

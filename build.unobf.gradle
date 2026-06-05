@@ -18,8 +18,7 @@ repositories {
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
     maven { url "https://maven.terraformersmc.com/releases" }
-    maven { url "https://maven.tr7zw.dev/repository/maven-public" }
-    maven { url "https://maven.jgj52.hu/repository/maven-snapshots" }
+    maven { url "https://api.modrinth.com/maven" }
 }
 
 dependencies {
@@ -28,10 +27,7 @@ dependencies {
     implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    implementation "dev.tr7zw:TRender:${project.trender_version}-${project.tr7zw_version}-fabric-SNAPSHOT"
-    implementation "dev.tr7zw:TRansition:${project.transition_version}-${project.tr7zw_version}-fabric-SNAPSHOT"
-    include "dev.tr7zw:TRender:${project.trender_version}-${project.tr7zw_version}-fabric-SNAPSHOT"
-    include "dev.tr7zw:TRansition:${project.transition_version}-${project.tr7zw_version}-fabric-SNAPSHOT"
+    implementation "maven.modrinth:screenapi:${project.screenapi_version}"
     implementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 }
 

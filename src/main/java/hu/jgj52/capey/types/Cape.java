@@ -49,7 +49,7 @@ public class Cape {
         List<JsonObject> capes = new ArrayList<>();
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI("https://capey.jgj52.hu/v1/capes"))
+                    .uri(new URI("https://api.capey.app/v1/capes"))
                     .GET()
                     .build();
 
@@ -89,7 +89,7 @@ public class Cape {
                 try {
                     semaphore.acquire();
                     HttpRequest request = HttpRequest.newBuilder()
-                            .uri(new URI("https://capey.jgj52.hu/v1/cape/" + uuid))
+                            .uri(new URI("https://api.capey.app/v1/cape/" + uuid))
                             .GET()
                             .build();
 
