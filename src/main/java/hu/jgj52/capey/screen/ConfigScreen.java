@@ -42,7 +42,7 @@ public class ConfigScreen extends BetterScreen {
 
     @Override
     protected int getScrollSpeed() {
-        return 10;
+        return 30;
     }
 
     @Override

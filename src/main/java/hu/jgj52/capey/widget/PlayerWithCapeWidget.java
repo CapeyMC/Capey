@@ -16,7 +16,6 @@ import net.minecraft.world.entity.player.PlayerSkin;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.jspecify.annotations.NonNull;
 
 import java.util.function.Supplier;
 
@@ -65,8 +64,9 @@ public class PlayerWithCapeWidget extends AbstractWidget {
         return background;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+    protected void extractWidgetRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         if (background) {
             graphics.fill(
                     getX(),
@@ -95,13 +95,13 @@ public class PlayerWithCapeWidget extends AbstractWidget {
     }
 
     @Override
-    protected void onDrag(@NonNull MouseButtonEvent event, double dx, double dy) {
+    protected void onDrag(@NotNull MouseButtonEvent event, double dx, double dy) {
         rotation.rotateY((float) Math.toRadians(dx * 2.5));
         super.onDrag(event, dx, dy);
     }
 
     @Override
-    protected void updateWidgetNarration(@NonNull NarrationElementOutput output) {
+    protected void updateWidgetNarration(@NotNull NarrationElementOutput output) {
 
     }
 }
