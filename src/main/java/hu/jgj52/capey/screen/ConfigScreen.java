@@ -15,7 +15,11 @@ import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.PlayerSkin;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
@@ -71,6 +75,7 @@ public class ConfigScreen extends BetterScreen {
                         profile,
                         skinWithCape
                 );
+                p.getInventory().add(38, new ItemStack(Items.ELYTRA));
 
                 int i = offset.getAndIncrement();
                 all.add(widget(new PlayerWithCapeWidget(
@@ -103,7 +108,7 @@ public class ConfigScreen extends BetterScreen {
                         fetcher.submit(() -> {
                             try {
                                 HttpRequest request = HttpRequest.newBuilder()
-                                        .uri(new URI("https://capey.jgj52.hu/v1/player"))
+                                        .uri(new URI("https://api.capey.app/v1/player"))
                                         .POST(
                                                 background()
                                                         ? HttpRequest.BodyPublishers.noBody()
