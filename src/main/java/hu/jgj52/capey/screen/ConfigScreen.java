@@ -186,7 +186,7 @@ public class ConfigScreen extends BetterScreen {
                 Button.builder(
                                 Component.translatable("capey.config.main.profile"),
                                 button ->
-                                    mc.setScreen(new ProfileScreen(this))
+                                    mc.setScreen(new ProfileScreen(this, mc.player))
                         )
                         .bounds(width - 90, 10, 80, 20)
                         .build(),

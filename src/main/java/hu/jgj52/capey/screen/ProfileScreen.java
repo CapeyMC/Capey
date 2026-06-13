@@ -14,6 +14,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.PlayerSkin;
@@ -40,8 +42,10 @@ public class ProfileScreen extends BetterScreen {
     private static final ExecutorService fetcher = Executors.newVirtualThreadPerTaskExecutor();
 
     private final Screen parent;
-    public ProfileScreen(Screen parent) {
+    private final AbstractClientPlayer player;
+    public ProfileScreen(Screen parent, AbstractClientPlayer player) {
         this.parent = parent;
+        this.player = player;
     }
 
     @Override
@@ -56,18 +60,19 @@ public class ProfileScreen extends BetterScreen {
 
     @Override
     protected void createWidgets(Font font) {
-        if (mc.level != null && mc.player != null) {
+        if (mc.level != null) {
+            Player cplayer = Player.of(this.player.getUUID());
             PlayerWithCapeWidget.FakePlayer mplayer = new PlayerWithCapeWidget.FakePlayer(
                     mc.level,
-                    mc.player.getGameProfile(),
-                    () -> mc.player.getSkin()
+                    this.player.getGameProfile(),
+                    this.player::getSkin
             );
             widget(new StringWidget(
-                    110 - font.width(mc.player.getName()) / 2,
+                    110 - font.width(this.player.getName()) / 2,
                     height / 2 - 110 - font.lineHeight,
-                    font.width(mc.player.getName()),
+                    font.width(this.player.getName()),
                     font.lineHeight,
-                    mc.player.getName(),
+                    this.player.getName(),
                     font
             ), "name", true);
             PlayerWithCapeWidget widget = widget(new PlayerWithCapeWidget(
@@ -83,13 +88,13 @@ public class ProfileScreen extends BetterScreen {
 
             AtomicInteger offset = new AtomicInteger();
             int perRow = mc.getWindow().getGuiScaledWidth() / 80 - 2;
-            Player local = Player.of(mc.player.getUUID());
+            Player local = Player.of(this.player.getUUID());
             Supplier<Cape> selected = local::getCape;
             List<PlayerWithCapeWidget> all = new ArrayList<>();
             all.add(widget);
             Cape.all(false).forEach(capeO -> {
-                if (!UUID.fromString(capeO.get("uploader").getAsString()).equals(mc.player.getUUID())) return;
                 Player player = Player.of(UUID.fromString(capeO.get("uploader").getAsString()));
+                if (player != cplayer) return;
                 Cape cape = Cape.of(UUID.fromString(capeO.get("uuid").getAsString()));
                 GameProfile profile = new GameProfile(player.getUUID(), "");
                 Supplier<PlayerSkin> skinWithCape = cape.fromSkin(player.getSkin());
@@ -101,6 +106,7 @@ public class ProfileScreen extends BetterScreen {
                 );
 
                 int i = offset.getAndIncrement();
+                net.minecraft.world.entity.player.Player tPlayer = this.player;
                 all.add(widget(new PlayerWithCapeWidget(
                         (i % perRow) * 80 + (width - perRow * 80) / 2,
                         (i / perRow) * 100 + 50,
@@ -122,7 +128,7 @@ public class ProfileScreen extends BetterScreen {
 
                     @Override
                     public void onClick(@NonNull MouseButtonEvent event, boolean doubleClick) {
-                        String nowUUID = mc.player.getUUID().toString();
+                        String nowUUID = tPlayer.getUUID().toString();
                         String capeUUID = cape.getUUID().toString();
                         if (background()) Capey.local.get().remove(nowUUID);
                         else Capey.local.get().addProperty(nowUUID, capeUUID);
