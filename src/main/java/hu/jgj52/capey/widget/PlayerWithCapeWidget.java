@@ -58,6 +58,10 @@ public class PlayerWithCapeWidget extends AbstractWidget {
         this(x, y, width, height, player, 40);
     }
 
+    public FakePlayer getPlayer() {
+        return player;
+    }
+
     public void background(boolean background) {
         this.background = background;
     }

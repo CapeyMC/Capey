@@ -4,5 +4,6 @@
   "capey.config.main.level": "You need to be in a world to set your cape!",
   "capey.message.token.your": "Your Capey token is:",
   "capey.message.token.share": "Do NOT share this with anyone!",
-  "capey.message.token.auto": "Capey automatically saved this token."
+  "capey.message.token.auto": "Capey automatically saved this token.",
+  "capey.config.main.elytra": "Toggle elytra"
 }

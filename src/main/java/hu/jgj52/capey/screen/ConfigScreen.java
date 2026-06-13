@@ -15,6 +15,7 @@ import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -73,7 +74,6 @@ public class ConfigScreen extends BetterScreen {
                         profile,
                         skinWithCape
                 );
-                p.getInventory().setItem(38, new ItemStack(Items.ELYTRA));
 
                 int i = offset.getAndIncrement();
                 all.add(widget(new PlayerWithCapeWidget(
@@ -140,6 +140,23 @@ public class ConfigScreen extends BetterScreen {
                         font
                 ));
             });
+            widget(
+                    Button.builder(
+                            Component.translatable("capey.config.main.elytra"),
+                            button -> {
+                                for (PlayerWithCapeWidget widget : all) {
+                                    Inventory inv = widget.getPlayer().getInventory();
+                                    // not the best method but good enough
+                                    if (inv.contains(new ItemStack(Items.ELYTRA))) inv.setItem(38, new ItemStack(Items.AIR));
+                                    else inv.setItem(38, new ItemStack(Items.ELYTRA));
+                                }
+                            }
+                    )
+                    .bounds(10, 40, 80, 20)
+                    .build(),
+                "elytra",
+                true
+            );
         } else {
             Component text = Component.translatable("capey.config.main.level").withColor(Color.RED.getRGB());
             widget(new StringWidget(
@@ -171,7 +188,7 @@ public class ConfigScreen extends BetterScreen {
                                 button ->
                                     mc.setScreen(new ProfileScreen(this))
                         )
-                        .bounds(10, 40, 80, 20)
+                        .bounds(width - 90, 10, 80, 20)
                         .build(),
                 "profile",
                 true

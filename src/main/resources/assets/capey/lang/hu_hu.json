@@ -4,5 +4,6 @@
   "capey.config.main.level": "Egy világban kell lenned, hogy beállíthasd a köpenyed!",
   "capey.message.token.your": "A Capey tokened:",
   "capey.message.token.share": "NE oszd meg ezt senkivel!",
-  "capey.message.token.auto": "A token automatikusan le lett mentve."
+  "capey.message.token.auto": "A token automatikusan le lett mentve.",
+  "capey.config.main.elytra": "Kitinszárnyak ki/bekapcsolása"
 }
