@@ -9,9 +9,11 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.entity.player.PlayerSkin;
 import org.jetbrains.annotations.NotNull;
@@ -80,6 +82,11 @@ public class PlayerWithCapeWidget extends AbstractWidget {
         EntityRenderer<FakePlayer, EntityRenderState> renderer = (EntityRenderer<FakePlayer, EntityRenderState>) mc.getEntityRenderDispatcher().getRenderer(player);
         EntityRenderState state = renderer.createRenderState();
         renderer.extractRenderState(player, state, a);
+        if (state instanceof AvatarRenderState st) {
+            st.elytraRotX = 0.25f;
+            st.elytraRotY = -0.01f;
+            st.elytraRotZ = -0.275f;
+        }
 
         graphics.entity(
                 state,

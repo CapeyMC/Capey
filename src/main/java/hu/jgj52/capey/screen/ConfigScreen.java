@@ -15,8 +15,6 @@ import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -75,7 +73,7 @@ public class ConfigScreen extends BetterScreen {
                         profile,
                         skinWithCape
                 );
-                //p.getInventory().add(38, new ItemStack(Items.ELYTRA));
+                p.getInventory().setItem(38, new ItemStack(Items.ELYTRA));
 
                 int i = offset.getAndIncrement();
                 all.add(widget(new PlayerWithCapeWidget(
