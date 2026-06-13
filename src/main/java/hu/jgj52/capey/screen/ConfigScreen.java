@@ -75,7 +75,7 @@ public class ConfigScreen extends BetterScreen {
                         profile,
                         skinWithCape
                 );
-                p.getInventory().add(38, new ItemStack(Items.ELYTRA));
+                //p.getInventory().add(38, new ItemStack(Items.ELYTRA));
 
                 int i = offset.getAndIncrement();
                 all.add(widget(new PlayerWithCapeWidget(

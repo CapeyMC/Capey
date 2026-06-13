@@ -11,6 +11,7 @@ import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.entity.player.PlayerSkin;
 import org.jetbrains.annotations.NotNull;
@@ -44,9 +45,8 @@ public class PlayerWithCapeWidget extends AbstractWidget {
     private final FakePlayer player;
     private final int scale;
     private boolean background = false;
-    private final Quaternionf rotation = new Quaternionf()
-            .rotateX((float) Math.toRadians(160))
-            .rotateY((float) Math.toRadians(200));
+    private float rotationX = 160;
+    private float rotationY = 200;
     public PlayerWithCapeWidget(int x, int y, int width, int height, FakePlayer player, int scale) {
         super(x, y, width, height, Component.empty());
         this.player = player;
@@ -85,7 +85,9 @@ public class PlayerWithCapeWidget extends AbstractWidget {
                 state,
                 scale,
                 new Vector3f(0, 0.7f, 0),
-                rotation,
+                new Quaternionf()
+                        .rotateX((float) Math.toRadians(rotationX))
+                        .rotateY((float) Math.toRadians(rotationY)),
                 new Quaternionf(),
                 getX(),
                 getY(),
@@ -96,7 +98,8 @@ public class PlayerWithCapeWidget extends AbstractWidget {
 
     @Override
     protected void onDrag(@NotNull MouseButtonEvent event, double dx, double dy) {
-        rotation.rotateY((float) Math.toRadians(dx * 2.5));
+        rotationX = Mth.clamp(this.rotationX - (float) -dy * 2.5f, 125.0f, 225.0f);
+        rotationY += (float) dx * 2.5f;
         super.onDrag(event, dx, dy);
     }
 
