@@ -1,6 +1,5 @@
 package hu.jgj52.capey.mixin;
 
-import com.mojang.authlib.GameProfile;
 import hu.jgj52.capey.types.Cape;
 import hu.jgj52.capey.types.Player;
 import net.minecraft.client.multiplayer.PlayerInfo;
@@ -10,12 +9,11 @@ import net.minecraft.world.entity.player.PlayerSkin;
 /*import net.minecraft.client.resources.PlayerSkin;
 *///? }
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.UUID;
+import static hu.jgj52.capey.Capey.getUUID;
 
 @Mixin(PlayerInfo.class)
 public class PlayerInfoMixin {
@@ -29,16 +27,5 @@ public class PlayerInfoMixin {
         if (cape == null) return;
 
         cir.setReturnValue(cape.fromSkin(() -> original).get());
-    }
-
-    @Unique
-    private UUID getUUID(GameProfile profile) {
-        return profile.
-                //? >= 1.21.10 {
-                    id
-                //? } else {
-                    /*getId
-                *///? }
-            ();
     }
 }

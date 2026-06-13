@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.entity.player.PlayerSkin;
 import org.jetbrains.annotations.NotNull;
@@ -60,6 +59,14 @@ public class PlayerWithCapeWidget extends AbstractWidget {
 
     public FakePlayer getPlayer() {
         return player;
+    }
+
+    public void rotateX(float x) {
+        rotationX = x;
+    }
+
+    public void rotateY(float y) {
+        rotationY = y;
     }
 
     public void background(boolean background) {
@@ -109,7 +116,7 @@ public class PlayerWithCapeWidget extends AbstractWidget {
 
     @Override
     protected void onDrag(@NotNull MouseButtonEvent event, double dx, double dy) {
-        rotationX = Mth.clamp(this.rotationX - (float) -dy * 2.5f, 125.0f, 225.0f);
+        rotationX = Mth.clamp(this.rotationX - (float) -dy * 2.5f, 140.0f, 220.0f);
         rotationY += (float) dx * 2.5f;
         super.onDrag(event, dx, dy);
     }
