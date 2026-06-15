@@ -1,9 +1,9 @@
 {
   "capey.config.main.reload": "Reload capes",
   "capey.config.main.profile": "My profile",
-  "capey.config.main.level": "You need to be in a world to set your cape!",
+  "capey.config.main.level": "You need to be at least once in a world since game start to be able to toggle elytra.",
+  "capey.config.main.elytra": "Toggle elytra",
   "capey.message.token.your": "Your Capey token is:",
   "capey.message.token.share": "Do NOT share this with anyone!",
-  "capey.message.token.auto": "Capey automatically saved this token.",
-  "capey.config.main.elytra": "Toggle elytra"
+  "capey.message.token.auto": "Capey automatically saved this token."
 }

@@ -1,9 +1,9 @@
 {
   "capey.config.main.reload": "Köpenyek újratöltése",
   "capey.config.main.profile": "Én profilom",
-  "capey.config.main.level": "Egy világban kell lenned, hogy beállíthasd a köpenyed!",
+  "capey.config.main.level": "Egyszer be kell lépned egy világba a játék elindítása óta, hogy láthass kitinszárnyakat.",
+  "capey.config.main.elytra": "Kitinszárnyak ki/bekapcsolása",
   "capey.message.token.your": "A Capey tokened:",
   "capey.message.token.share": "NE oszd meg ezt senkivel!",
-  "capey.message.token.auto": "A token automatikusan le lett mentve.",
-  "capey.config.main.elytra": "Kitinszárnyak ki/bekapcsolása"
+  "capey.message.token.auto": "A token automatikusan le lett mentve."
 }

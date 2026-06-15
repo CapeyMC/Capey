@@ -60,142 +60,131 @@ public class ProfileScreen extends BetterScreen {
 
     @Override
     protected void createWidgets(Font font) {
-        if (mc.level != null) {
-            Player cplayer = Player.of(this.player.getUUID());
-            PlayerWithCapeWidget.FakePlayer mplayer = new PlayerWithCapeWidget.FakePlayer(
-                    mc.level,
-                    this.player.getGameProfile(),
-                    this.player::getSkin
-            );
-            widget(new StringWidget(
-                    110 - font.width(this.player.getName()) / 2,
-                    height / 2 - 110 - font.lineHeight,
-                    font.width(this.player.getName()),
-                    font.lineHeight,
-                    this.player.getName(),
-                    font
-            ), "name", true);
-            PlayerWithCapeWidget widget = widget(new PlayerWithCapeWidget(
-                    40,
-                    height / 2 - 100,
-                    140,
-                    200,
-                    mplayer,
-                    80
-            ), "skin", true);
-            widget.rotateX(180);
-            widget.rotateY(20);
+        Player cplayer = Player.of(this.player.getUUID());
+        PlayerWithCapeWidget.FakePlayer mplayer = new PlayerWithCapeWidget.FakePlayer(this.player::getSkin);
+        widget(new StringWidget(
+                70 - font.width(this.player.getName()) / 2,
+                height / 2 - 110 - font.lineHeight,
+                font.width(this.player.getName()),
+                font.lineHeight,
+                this.player.getName(),
+                font
+        ), "name", true);
+        PlayerWithCapeWidget widget = widget(new PlayerWithCapeWidget(
+                0,
+                height / 2 - 100,
+                140,
+                200,
+                mplayer,
+                80
+        ), "skin", true);
+        widget.rotateX(180);
+        widget.rotateY(20);
 
-            AtomicInteger offset = new AtomicInteger();
-            int perRow = mc.getWindow().getGuiScaledWidth() / 80 - 2;
-            Player local = Player.of(this.player.getUUID());
-            Supplier<Cape> selected = local::getCape;
-            List<PlayerWithCapeWidget> all = new ArrayList<>();
-            all.add(widget);
-            Cape.all(false).forEach(capeO -> {
-                Player player = Player.of(UUID.fromString(capeO.get("uploader").getAsString()));
-                if (player != cplayer) return;
-                Cape cape = Cape.of(UUID.fromString(capeO.get("uuid").getAsString()));
-                GameProfile profile = new GameProfile(player.getUUID(), "");
-                Supplier<PlayerSkin> skinWithCape = cape.fromSkin(player.getSkin());
+        AtomicInteger offset = new AtomicInteger();
+        int perRow = mc.getWindow().getGuiScaledWidth() / 80 - 2;
+        Player local = Player.of(this.player.getUUID());
+        Supplier<Cape> selected = local::getCape;
+        List<PlayerWithCapeWidget> all = new ArrayList<>();
+        all.add(widget);
+        Cape.all(false).forEach(capeO -> {
+            Player player = Player.of(UUID.fromString(capeO.get("uploader").getAsString()));
+            if (player != cplayer) return;
+            Cape cape = Cape.of(UUID.fromString(capeO.get("uuid").getAsString()));
+            Supplier<PlayerSkin> skinWithCape = cape.fromSkin(player.getSkin());
 
-                PlayerWithCapeWidget.FakePlayer p = new PlayerWithCapeWidget.FakePlayer(
-                        mc.level,
-                        profile,
-                        skinWithCape
-                );
+            PlayerWithCapeWidget.FakePlayer p = new PlayerWithCapeWidget.FakePlayer(skinWithCape);
 
-                int i = offset.getAndIncrement();
-                net.minecraft.world.entity.player.Player tPlayer = this.player;
-                all.add(widget(new PlayerWithCapeWidget(
-                        (i % perRow) * 80 + (width - perRow * 80) / 2,
-                        (i / perRow) * 100 + 50,
-                        70,
-                        100,
-                        p
-                ) {
-                    @Override
-                    protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-                        super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
+            int i = offset.getAndIncrement();
+            net.minecraft.world.entity.player.Player tPlayer = this.player;
+            all.add(widget(new PlayerWithCapeWidget(
+                    (i % perRow) * 80 + (width - perRow * 80) / 2,
+                    (i / perRow) * 100 + 50,
+                    70,
+                    100,
+                    p
+            ) {
+                @Override
+                protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+                    super.extractWidgetRenderState(graphics, mouseX, mouseY, a);
 
-                        if (selected.get() == cape && !background()) {
-                            all.forEach(w -> w.background(false));
-                            background(true);
-                        } else if (selected.get() == null && background()) {
-                            background(false);
-                        }
+                    if (selected.get() == cape && !background()) {
+                        all.forEach(w -> w.background(false));
+                        background(true);
+                    } else if (selected.get() == null && background()) {
+                        background(false);
                     }
+                }
 
-                    @Override
-                    public void onClick(@NonNull MouseButtonEvent event, boolean doubleClick) {
-                        String nowUUID = tPlayer.getUUID().toString();
-                        String capeUUID = cape.getUUID().toString();
-                        if (background()) Capey.local.get().remove(nowUUID);
-                        else Capey.local.get().addProperty(nowUUID, capeUUID);
-                        Capey.local.save();
-                        local.reFetch();
-                        fetcher.submit(() -> {
-                            try {
-                                HttpRequest request = HttpRequest.newBuilder()
-                                        .uri(new URI("https://api.capey.app/v1/player"))
-                                        .POST(
-                                                background()
-                                                        ? HttpRequest.BodyPublishers.noBody()
-                                                        : HttpRequest.BodyPublishers.ofString(capeUUID)
-                                        )
-                                        .header(
-                                                HttpHeaders.AUTHORIZATION,
-                                                Capey.tokens.get().has(nowUUID)
-                                                        ? Capey.tokens.get().get(nowUUID).getAsString()
-                                                        : ""
-                                        )
-                                        .build();
+                @Override
+                public void onClick(@NonNull MouseButtonEvent event, boolean doubleClick) {
+                    String nowUUID = tPlayer.getUUID().toString();
+                    String capeUUID = cape.getUUID().toString();
+                    if (background()) Capey.local.get().remove(nowUUID);
+                    else Capey.local.get().addProperty(nowUUID, capeUUID);
+                    Capey.local.save();
+                    local.reFetch();
+                    fetcher.submit(() -> {
+                        try {
+                            HttpRequest request = HttpRequest.newBuilder()
+                                    .uri(new URI("https://api.capey.app/v1/player"))
+                                    .POST(
+                                            background()
+                                                    ? HttpRequest.BodyPublishers.noBody()
+                                                    : HttpRequest.BodyPublishers.ofString(capeUUID)
+                                    )
+                                    .header(
+                                            HttpHeaders.AUTHORIZATION,
+                                            Capey.tokens.get().has(nowUUID)
+                                                    ? Capey.tokens.get().get(nowUUID).getAsString()
+                                                    : ""
+                                    )
+                                    .build();
 
-                                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-                                if (response.statusCode() != 200) {
-                                    throw new RuntimeException(response.body());
-                                }
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
+                            if (response.statusCode() != 200) {
+                                throw new RuntimeException(response.body());
                             }
-                        });
-                    }
-                }));
-                widget(new StringWidget(
-                        (i % perRow) * 80 + (width - perRow * 80) / 2,
-                        (i / perRow) * 100 + 90 + 50,
-                        70,
-                        font.lineHeight,
-                        Component.literal(capeO.get("name").getAsString()),
-                        font
-                ));
-            });
-            widget(
-                    Button.builder(
-                                    Component.translatable("capey.config.main.elytra"),
-                                    button -> {
-                                        for (PlayerWithCapeWidget wwidget : all) {
-                                            Inventory inv = wwidget.getPlayer().getInventory();
-                                            // not the best method but good enough
-                                            if (inv.contains(new ItemStack(Items.ELYTRA))) inv.setItem(38, new ItemStack(Items.AIR));
-                                            else inv.setItem(38, new ItemStack(Items.ELYTRA));
-                                        }
-                                    }
-                            )
-                            .bounds(10, 10, 80, 20)
-                            .build(),
-                    "elytra",
-                    true
-            );
-        } else {
-            Component text = Component.translatable("capey.config.main.level").withColor(Color.RED.getRGB());
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                }
+            }));
+            Component name = Component.literal(capeO.get("name").getAsString());
+            int add = font.width(name) > 70 ? 2 : 35 - font.width(name) / 2;
             widget(new StringWidget(
-                    (width - font.width(text)) / 2,
-                    (height - font.lineHeight) / 2,
-                    font.width(text),
+                    (i % perRow) * 80 + (width - perRow * 80) / 2 + add,
+                    (i / perRow) * 100 + 90 + 50,
+                    70,
                     font.lineHeight,
-                    text,
+                    name,
+                    font
+            ));
+        });
+        widget(
+                Button.builder(
+                                Component.translatable("capey.config.main.elytra"),
+                                button -> {
+                                    for (PlayerWithCapeWidget wwidget : all) {
+                                        wwidget.getPlayer().elytra();
+                                    }
+                                }
+                        )
+                        .bounds(10, 10, 80, 20)
+                        .build(),
+                "elytra",
+                true
+        );
+        if (PlayerWithCapeWidget.FakePlayer.ely().isEmpty()) {
+            Component level = Component.translatable("capey.config.main.level").withColor(0xff000000);
+            widget(new StringWidget(
+                    10 + font.lineHeight,
+                    width / 2,
+                    font.width(level),
+                    font.lineHeight,
+                    level,
                     font
             ));
         }
