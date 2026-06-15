@@ -178,11 +178,15 @@ public class ProfileScreen extends BetterScreen {
                 true
         );
         if (PlayerWithCapeWidget.FakePlayer.ely().isEmpty()) {
-            Component level = Component.translatable("capey.config.main.level").withColor(0xff000000);
-            widget(new StringWidget(
-                    10 + font.lineHeight,
-                    width / 2,
+            Component level = Component.translatable("capey.config.main.level").withColor(0x00ff0000);
+            int w = Math.min(
                     font.width(level),
+                    width - 200
+            );
+            widget(new StringWidget(
+                    width / 2 - w / 2,
+                    10 + font.lineHeight,
+                    w,
                     font.lineHeight,
                     level,
                     font
